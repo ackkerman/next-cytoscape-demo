@@ -1,0 +1,480 @@
+{
+  "nodes": [
+    {
+      "id": "A",
+      "label": "WebAssemblyとJavaScript間の相互作用",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "B",
+      "label": "1. WebAssemblyとJavaScript間の相互作用の概要",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "C",
+      "label": "2. JavaScript環境におけるWebAssemblyの主要な概念",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "D",
+      "label": "3. WebAssemblyモジュールのロードとインスタンス化",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "E",
+      "label": "4. WebAssembly JavaScript API：オブジェクトと機能",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "F",
+      "label": "5. JavaScriptとWebAssembly間のデータ交換",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "G",
+      "label": "6. JavaScriptからのWebAssembly関数の呼び出し",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "H",
+      "label": "7. WebAssemblyからのJavaScript関数の呼び出し",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "I",
+      "label": "8. WebAssemblyとJavaScriptの相互作用におけるエラー処理",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "J",
+      "label": "9. 高度なトピックと考慮事項",
+      "primary": true,
+      "content": []
+    },
+    {
+      "id": "K",
+      "label": "10. 結論",
+      "primary": true,
+      "content": [
+        "WebAssemblyはパフォーマンスが重要なWebアプリに強力なツール",
+        "JavaScriptと連携し、より高速で機能豊富なWeb体験を実現",
+        "JavaScript APIはロード、コンパイル、インスタンス化、対話に必要な機能を提供",
+        "`wasm-bindgen`のようなツールが相互運用性をさらに強化",
+        "WebAssemblyの役割はますます重要になる"
+      ]
+    },
+    {
+      "id": "B1",
+      "label": "WebAssembly (Wasm)",
+      "content": [
+        "最新ブラウザで実行可能な新しいコード",
+        "C, C++, Rustなどのコンパイルターゲット",
+        "コンパクトなバイナリ形式、ほぼネイティブなパフォーマンス",
+        "W3Cによるオープンスタンダード (2.0開発中)"
+      ]
+    },
+    {
+      "id": "B2",
+      "label": "JavaScript (JS) との関係",
+      "content": [
+        "JSを置き換えるのではなく補完",
+        "並行して実行",
+        "DOMや多くのWeb APIアクセスはJS経由"
+      ]
+    },
+    {
+      "id": "B3",
+      "label": "WebAssembly JavaScript API (wasm-js-api)",
+      "content": [
+        "WasmとJS間の相互呼び出し",
+        "Wasmコードのダウンロード、コンパイル、実行をJSが制御",
+        "モジュールの構築とインスタンス化",
+        "インポート/エクスポートされた関数の呼び出し",
+        "データ交換方法",
+        "エラー処理"
+      ]
+    },
+    {
+      "id": "C1",
+      "label": "Module",
+      "content": [
+        "コンパイルされたWasmバイナリ",
+        "ステートレス、ウィンドウ/ワーカー間で共有可能",
+        "インポートとエクスポートを宣言",
+        "`WebAssembly.compile()` / `compileStreaming()` でコンパイル"
+      ]
+    },
+    {
+      "id": "C2",
+      "label": "Instance",
+      "content": [
+        "Moduleと実行時状態 (Memory, Table, インポート値) のペア",
+        "`WebAssembly.instantiate()` / `instantiateStreaming()` で作成",
+        "`exports`プロパティでエクスポート機能にアクセス"
+      ]
+    },
+    {
+      "id": "C3",
+      "label": "Memory",
+      "content": [
+        "サイズ変更可能なArrayBuffer (バイトの線形配列)",
+        "JSからアクセス可能 (`WebAssembly.Memory()` で作成, `grow()` で拡張)"
+      ]
+    },
+    {
+      "id": "C4",
+      "label": "Table",
+      "content": [
+        "参照 (関数など) のサイズ変更可能な型付き配列",
+        "JSから操作可能 (`WebAssembly.Table()` で作成, get(), set(), grow())"
+      ]
+    },
+    {
+      "id": "C5",
+      "label": "WebAssembly Store",
+      "content": [
+        "各エージェント (JS実行コンテキスト) に関連付けられた抽象マシン状態",
+        "Wasmプログラムの全グローバル状態を保持"
+      ]
+    },
+    {
+      "id": "D1",
+      "label": "Wasmバイトコードのフェッチ",
+      "content": [
+        "`Workspace()` または `XMLHttpRequest` (responseType: 'arraybuffer')",
+        "<script type='module'> や import との直接統合は現在なし"
+      ]
+    },
+    {
+      "id": "D2",
+      "label": "従来の方法: `WebAssembly.compile()` と `WebAssembly.instantiate()`",
+      "content": [
+        "`compile()`: バイナリコード -> `WebAssembly.Module`",
+        "`instantiate()`: バイトコード -> Promise<{module, instance}> (ArrayBuffer変換必要)",
+        "オプションの `importObject` でインポート提供"
+      ]
+    },
+    {
+      "id": "D3",
+      "label": "新しい効率的な方法: `WebAssembly.compileStreaming()` と `WebAssembly.instantiateStreaming()`",
+      "content": [
+        "生のバイトストリームを直接操作 (中間ArrayBuffer不要)",
+        "`compileStreaming()`: ストリーミングソース -> `WebAssembly.Module`",
+        "`instantiateStreaming()`: ストリーミングソース -> Promise<{module, instance}> (fetch()呼び出しを直接引数に)",
+        "オプションの `importObject`"
+      ]
+    },
+    {
+      "id": "E1",
+      "label": "`WebAssembly.Module`",
+      "content": [
+        "`exports()`: エクスポートされた全要素の配列",
+        "`imports()`: インポートされた全要素の配列",
+        "`customSections()`: 指定名カスタムセクションの内容"
+      ]
+    },
+    {
+      "id": "E2",
+      "label": "`WebAssembly.Instance`",
+      "content": [
+        "`prototype.exports`: エクスポートされた全要素へのアクセス (JS関数として公開)"
+      ]
+    },
+    {
+      "id": "E3",
+      "label": "`WebAssembly.Memory`",
+      "content": [
+        "`prototype.buffer`: 基になるArrayBuffer",
+        "`prototype.grow(delta)`: メモリを指定ページ数増加",
+        "`toFixedLengthBuffer()` / `toResizableBuffer()`"
+      ]
+    },
+    {
+      "id": "E4",
+      "label": "`WebAssembly.Table`",
+      "content": [
+        "`prototype.get(index)`: 指定インデックスの参照取得",
+        "`prototype.set(index, value)`: 指定インデックスに参照設定",
+        "`prototype.grow(delta, value)`: テーブルを指定要素数増加",
+        "`prototype.length`: 現在の要素数"
+      ]
+    },
+    {
+      "id": "E5",
+      "label": "`WebAssembly.Global`",
+      "content": [
+        "Wasmグローバル変数を表現",
+        "`value`属性 (可変な場合読み書き可)",
+        "`valueOf()`メソッド",
+        "`WebAssembly.Global()` で作成"
+      ]
+    },
+    {
+      "id": "E6",
+      "label": "その他API",
+      "content": [
+        "`WebAssembly` (静的メソッド: compile(), compileStreaming(), instantiate(), instantiateStreaming(), validate())",
+        "エラーオブジェクト: `CompileError`, `LinkError`, `RuntimeError`"
+      ]
+    },
+    {
+      "id": "F1",
+      "label": "型変換",
+      "content": [
+        "抽象操作 `ToWebAssemblyValue`, `ToJSValue`",
+        "サポート型: i32, i64 (JS BigInt), f32, f64, v128, externref, anyfunc",
+        "主に整数と浮動小数点プリミティブ"
+      ]
+    },
+    {
+      "id": "F2",
+      "label": "`wasm-bindgen` ツール",
+      "content": [
+        "高レベルな相互作用を促進",
+        "文字列, JSオブジェクト, クラスなど豊富な型に対応",
+        "JS機能をRustにインポート (DOM操作, console.log)",
+        "Rust機能をJSにエクスポート (クラス, 関数)",
+        "TypeScriptバインディング自動生成"
+      ]
+    },
+    {
+      "id": "G1",
+      "label": "エクスポートへのアクセス",
+      "content": [
+        "`WebAssembly.Instance.exports` を通じてアクセス",
+        "エクスポートされた関数は通常のJS関数として同期的に呼び出し可能"
+      ]
+    },
+    {
+      "id": "G2",
+      "label": "例",
+      "content": [
+        "関数呼び出し: `instance.exports.exported_func()`",
+        "メモリへアクセス: `new DataView(instance.exports.memory.buffer)`",
+        "テーブル要素へアクセス: `instance.exports.table.get(0)()`"
+      ]
+    },
+    {
+      "id": "H1",
+      "label": "関数のインポート",
+      "content": [
+        "`importObject` を介してJS関数をWasmインスタンスに渡す",
+        "WasmコードはインポートされたJS関数を同期的に呼び出し可能"
+      ]
+    },
+    {
+      "id": "H2",
+      "label": "`importObject` の構造",
+      "content": [
+        "Wasmモジュールのインポート宣言に対応するプロパティ (moduleName.componentName)",
+        "関数インポート: JS関数",
+        "メモリインポート: `WebAssembly.Memory` オブジェクト",
+        "テーブルインポート: `WebAssembly.Table` オブジェクト",
+        "グローバルインポート: 数値, BigInt, または `WebAssembly.Global` オブジェクト"
+      ]
+    },
+    {
+      "id": "H3",
+      "label": "概念例 (JSでimportObject定義 → WasmからJS呼び出し)",
+      "content": []
+    },
+    {
+      "id": "I1",
+      "label": "エラーの種類",
+      "content": [
+        "`WebAssembly.CompileError`: コンパイル時エラー",
+        "`WebAssembly.LinkError`: リンク時エラー (インポート解決不可など)",
+        "`WebAssembly.RuntimeError`: 実行時エラー (範囲外メモリアクセスなど)"
+      ]
+    },
+    {
+      "id": "I2",
+      "label": "JavaScript例外へのマッピング",
+      "content": [
+        "WasmエラーはJS例外にマッピングされる",
+        "デコード/検証失敗: 一般的 `Error`",
+        "リンクエラー: `LinkError` 例外",
+        "WasmからJSへのランタイム例外: `WebAssembly.Exception` (非標準)"
+      ]
+    },
+    {
+      "id": "J1",
+      "label": "非同期操作とPromise",
+      "content": [
+        "`WebAssembly.compileStreaming()`, `instantiateStreaming()`, `instantiate()` はPromiseを返す",
+        "非同期コンパイルはモジュールオブジェクト構築と並行"
+      ]
+    },
+    {
+      "id": "J2",
+      "label": "共有メモリ",
+      "content": [
+        "`WebAssembly.Memory` は `SharedArrayBuffer` を表現可能 (共有メモリの場合)",
+        "Wasmスレッドによるメモリ共有の可能性"
+      ]
+    }
+  ],
+  "links": [
+    {
+      "source": "A",
+      "target": "B"
+    },
+    {
+      "source": "A",
+      "target": "C"
+    },
+    {
+      "source": "A",
+      "target": "D"
+    },
+    {
+      "source": "A",
+      "target": "E"
+    },
+    {
+      "source": "A",
+      "target": "F"
+    },
+    {
+      "source": "A",
+      "target": "G"
+    },
+    {
+      "source": "A",
+      "target": "H"
+    },
+    {
+      "source": "A",
+      "target": "I"
+    },
+    {
+      "source": "A",
+      "target": "J"
+    },
+    {
+      "source": "A",
+      "target": "K"
+    },
+    {
+      "source": "B",
+      "target": "B1"
+    },
+    {
+      "source": "B",
+      "target": "B2"
+    },
+    {
+      "source": "B",
+      "target": "B3"
+    },
+    {
+      "source": "C",
+      "target": "C1"
+    },
+    {
+      "source": "C",
+      "target": "C2"
+    },
+    {
+      "source": "C",
+      "target": "C3"
+    },
+    {
+      "source": "C",
+      "target": "C4"
+    },
+    {
+      "source": "C",
+      "target": "C5"
+    },
+    {
+      "source": "D",
+      "target": "D1"
+    },
+    {
+      "source": "D",
+      "target": "D2"
+    },
+    {
+      "source": "D",
+      "target": "D3"
+    },
+    {
+      "source": "E",
+      "target": "E1"
+    },
+    {
+      "source": "E",
+      "target": "E2"
+    },
+    {
+      "source": "E",
+      "target": "E3"
+    },
+    {
+      "source": "E",
+      "target": "E4"
+    },
+    {
+      "source": "E",
+      "target": "E5"
+    },
+    {
+      "source": "E",
+      "target": "E6"
+    },
+    {
+      "source": "F",
+      "target": "F1"
+    },
+    {
+      "source": "F",
+      "target": "F2"
+    },
+    {
+      "source": "G",
+      "target": "G1"
+    },
+    {
+      "source": "G",
+      "target": "G2"
+    },
+    {
+      "source": "H",
+      "target": "H1"
+    },
+    {
+      "source": "H",
+      "target": "H2"
+    },
+    {
+      "source": "H",
+      "target": "H3"
+    },
+    {
+      "source": "I",
+      "target": "I1"
+    },
+    {
+      "source": "I",
+      "target": "I2"
+    },
+    {
+      "source": "J",
+      "target": "J1"
+    },
+    {
+      "source": "J",
+      "target": "J2"
+    }
+  ]
+}
