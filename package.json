@@ -1,0 +1,42 @@
+{
+  "name": "graph-visualization",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@types/cytoscape-dagre": "^2.3.3",
+    "cytoscape": "^3.32.0",
+    "cytoscape-cola": "^2.5.1",
+    "cytoscape-cose-bilkent": "^4.1.0",
+    "cytoscape-dagre": "^2.5.0",
+    "cytoscape-elk": "^2.3.0",
+    "cytoscape-klay": "^3.1.4",
+    "lucide-react": "^0.510.0",
+    "next": "15.3.2",
+    "prismjs": "^1.30.0",
+    "react": "^19.0.0",
+    "react-cytoscapejs": "^2.0.0",
+    "react-dom": "^19.0.0",
+    "react-simple-code-editor": "^0.14.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.6",
+    "@types/node": "^20",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^19",
+    "@types/react-cytoscapejs": "^1.2.5",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.2",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.6",
+    "typescript": "^5"
+  }
+}
