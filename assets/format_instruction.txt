@@ -26,10 +26,12 @@
 | -------- | -------- | -- | ---------------------------------- |
 | `source` | `string` | ✅  | 辺の始点ノード ID（`nodes[*].id` と一致すること）。 |
 | `target` | `string` | ✅  | 辺の終点ノード ID（`nodes[*].id` と一致すること）。 |
+| `value`  | `int`    | ❷  | 辺の重み |
 
 > **向き**は *source → target* の **有向グラフ**。
 > `convertToCytoscapeElements()` が自動で `id: "e-source-target"` を生成するので
 > `links` 側で `id` を書く必要は無い。
+> 重み付きグラフにする際は`value`に値を指定する。
 
 
 ### ✅ 最小構成サンプル
@@ -43,7 +45,7 @@
   ],
   "links": [
     { "source": "A", "target": "B" },
-    { "source": "A", "target": "C" }
+    { "source": "A", "target": "C", "value": 1 }
   ]
 }
 ```
