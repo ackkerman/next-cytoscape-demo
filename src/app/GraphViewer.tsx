@@ -1,36 +1,48 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect } from "react";
-import Cytoscape from "cytoscape";
 import CytoscapeComponent from "react-cytoscapejs";
 
-// @ts-ignore
 import COSEBilkent from "cytoscape-cose-bilkent";
-// @ts-ignore
 import cola from "cytoscape-cola";
-// @ts-ignore
 import dagre from "cytoscape-dagre";
-// @ts-ignore
 import elk from "cytoscape-elk";
-// @ts-ignore
 import klay from "cytoscape-klay";
+import cytoscape from "cytoscape";
 
-Cytoscape.use(COSEBilkent);
-Cytoscape.use(cola);
-// @ts-ignore
-Cytoscape.use(dagre);
-Cytoscape.use(elk);
-Cytoscape.use(klay);
+if (!(globalThis as any)[Symbol.for("cytoscapeExts")]) {
+  (globalThis as any)[Symbol.for("cytoscapeExts")] = true;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  cytoscape.use(COSEBilkent);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  cytoscape.use(cola);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  cytoscape.use(dagre);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  cytoscape.use(elk);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  cytoscape.use(klay);
+}
+
+export type GraphNode = {
+  id: string;
+  label: string;
+  primary?: boolean;
+  content?: string[];
+};
 
 type Props = {
   elements: cytoscape.ElementDefinition[];
   layout: keyof typeof layouts;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // @ts-ignore
   stylesheet: cytoscape.Stylesheet[];
   onCyInit: (cy: cytoscape.Core) => void;
   onNodeSelect: (n: { id: string; label: string; content: string[] } | null) => void;
 };
 
-export const layouts: Record<string, any> = {
+export const layouts = {
   'cose': { name: 'cose', animate: true, randomize: false, nodeDimensionsIncludeLabels: true },
   'breadthfirst': { name: 'breadthfirst', directed: true, animate: true, spacingFactor: 1.5 },
   'concentric': { name: 'concentric', animate: true, minNodeSpacing: 50 },
@@ -44,9 +56,28 @@ export const layouts: Record<string, any> = {
   'dagre': { name: 'dagre', directed: true, animate: true, spacingFactor: 1.5 },
   'elk': { name: 'elk', animate: true, randomize: false, nodeDimensionsIncludeLabels: true },
   'klay': { name: 'klay', animate: true, randomize: false, nodeDimensionsIncludeLabels: true }
-};
+} as const;
 
 const GraphViewer: React.FC<Props> = ({ elements, layout, stylesheet, onCyInit, onNodeSelect }) => {
+
+  const handleCyInit = (cy: cytoscape.Core) => {
+    if (!cy.scratch("_eventsBound")) {
+      cy.on("tap", "node", (evt) => {
+        const n = evt.target;
+        onNodeSelect({
+          id: n.id(),
+          label: n.data("label"),
+          content: n.data("content") ?? []
+        });
+      });
+      cy.on("tap", (evt) => {
+        if (evt.target === cy) onNodeSelect(null);
+      });
+      cy.scratch("_eventsBound", true);
+    }
+    onCyInit(cy);
+  };
+  
   useEffect(() => {
     // no-op: this is just to ensure styles reloaded when hot-reloading
   }, [stylesheet]);
@@ -58,24 +89,7 @@ const GraphViewer: React.FC<Props> = ({ elements, layout, stylesheet, onCyInit, 
       stylesheet={stylesheet}
       style={{ width: "100%", height: "100%" }}
       layout={layouts[layout]}
-      cy={(cy) => {
-        // 初回のみイベント登録
-        if (!cy.scratch("_eventsBound")) {
-          cy.on("tap", "node", (evt) => {
-            const n = evt.target;
-            onNodeSelect({
-              id: n.id(),
-              label: n.data("label"),
-              content: n.data("content") ?? []
-            });
-          });
-          cy.on("tap", (evt) => {
-            if (evt.target === cy) onNodeSelect(null);
-          });
-          cy.scratch("_eventsBound", true);
-        }
-        onCyInit(cy);
-      }}
+      cy={(cy) => handleCyInit(cy as unknown as cytoscape.Core)}
       boxSelectionEnabled={true}
       wheelSensitivity={0.3}
     />

@@ -38,7 +38,8 @@ const NodeLinkImporter: React.FC<Props> = ({ onLoad }) => {
       const graph: NodeLinkGraph = JSON.parse(raw);
       const elements = convertToCytoscapeElements(graph);
       onLoad(elements);
-    } catch (err) {
+    } catch (e) {
+      console.error(e);
       alert("⚠️ JSON の構文が正しくありません");
     }
   };

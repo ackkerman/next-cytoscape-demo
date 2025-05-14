@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, ChevronRight, EyeOff } from "lucide-react";
 
 import NodeLinkImporter from "./NodeLinkImporter";
 import GraphViewer, { layouts } from "./GraphViewer";
@@ -87,7 +87,7 @@ const Empty = () => (
   </div>
 );
 
-// @ts-ignore
+// @ts-expect-error, CytoscapeComponent does not have a type definition for stylesheet
 const stylesheet: cytoscape.Stylesheet[] = [
   { selector: "node", style: { "background-color": "#fff", "border-width": 1, "border-color": "#333", label: "data(label)", "text-wrap": "wrap", "text-valign": "center", "text-halign": "center", "text-max-width": "200px", "font-size": "12px", color: "#000", width: "label", height: "label", padding: "15px", shape: "round-rectangle" } },
   { selector: "node[primary]", style: { "background-color": "#f5f5f5", "border-color": "#000", "border-width": 2, "font-weight": "bold" } },
