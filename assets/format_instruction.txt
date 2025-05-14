@@ -1,9 +1,5 @@
 ## 🌐 Node-Link JSON 仕様
 
-> **目的**
-> LLM が出力した JSON を `convertToCytoscapeElements()` にそのまま渡し、
-> Cytoscape.js で描画できるようにする。
-
 ### 📑 ルート構造
 
 ```jsonc
