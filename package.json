@@ -19,25 +19,25 @@
     "lucide-react": "^0.510.0",
     "next": "15.3.2",
     "prismjs": "^1.30.0",
-    "react": "^19.0.0",
+    "react": "^19.1.0",
     "react-cytoscapejs": "^2.0.0",
-    "react-dom": "^19.0.0",
+    "react-dom": "^19.1.0",
     "react-simple-code-editor": "^0.14.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.6",
     "@types/cytoscape": "^3.21.9",
-    "@types/node": "^20",
+    "@types/node": "^20.17.47",
     "@types/prismjs": "^1.26.5",
-    "@types/react": "^19",
+    "@types/react": "^19.1.4",
     "@types/react-cytoscapejs": "^1.2.5",
-    "@types/react-dom": "^19",
+    "@types/react-dom": "^19.1.5",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9",
+    "eslint": "^9.26.0",
     "eslint-config-next": "15.3.2",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.6",
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   }
 }
