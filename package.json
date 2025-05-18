@@ -11,11 +11,13 @@
   "dependencies": {
     "@types/cytoscape-dagre": "^2.3.3",
     "cytoscape": "^3.32.0",
+    "cytoscape-bubblesets": "^4.0.0",
     "cytoscape-cola": "^2.5.1",
     "cytoscape-cose-bilkent": "^4.1.0",
     "cytoscape-dagre": "^2.5.0",
     "cytoscape-elk": "^2.3.0",
     "cytoscape-klay": "^3.1.4",
+    "cytoscape-layers": "^3.0.0",
     "lucide-react": "^0.510.0",
     "next": "15.3.2",
     "prismjs": "^1.30.0",

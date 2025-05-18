@@ -14,6 +14,9 @@ importers:
       cytoscape:
         specifier: ^3.32.0
         version: 3.32.0
+      cytoscape-bubblesets:
+        specifier: ^4.0.0
+        version: 4.0.0(cytoscape-layers@3.0.0(cytoscape@3.32.0))(cytoscape@3.32.0)
       cytoscape-cola:
         specifier: ^2.5.1
         version: 2.5.1(cytoscape@3.32.0)
@@ -29,6 +32,9 @@ importers:
       cytoscape-klay:
         specifier: ^3.1.4
         version: 3.1.4(cytoscape@3.32.0)
+      cytoscape-layers:
+        specifier: ^3.0.0
+        version: 3.0.0(cytoscape@3.32.0)
       lucide-react:
         specifier: ^0.510.0
         version: 0.510.0(react@19.1.0)
@@ -498,6 +504,12 @@ packages:
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
 
+  '@types/lodash.throttle@4.1.9':
+    resolution: {integrity: sha512-PCPVfpfueguWZQB7pJQK890F2scYKoDUL3iM522AptHWn7d5NQmeS/LTEHIcLr5PaTzl3dK2Z0xSUHHTHwaL5g==}
+
+  '@types/lodash@4.17.16':
+    resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
+
   '@types/node@20.17.47':
     resolution: {integrity: sha512-3dLX0Upo1v7RvUimvxLeXqwrfyKxUINk0EAM83swP2mlSUcwV73sZy8XhNz8bcZ3VbsfQyC/y6jRdL5tgCNpDQ==}
 
@@ -755,6 +767,9 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
+  bubblesets-js@3.0.0:
+    resolution: {integrity: sha512-tJB3f7QTpDGjhhwi4tEeSXuBEcaNJ3Cq5cxMaNKRpfntcQ3r1HQIM93ar315o9mZe+PvWDOuZp2qpRxQRYiGaA==}
+
   busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
     engines: {node: '>=10.16.0'}
@@ -840,6 +855,12 @@ packages:
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
+  cytoscape-bubblesets@4.0.0:
+    resolution: {integrity: sha512-29Fdd31vNbLimRYWAmP4q8KjdT78XXz8tcNqbrsyxDtz6Rk995nS7MndQlZNS1WqnnyCC7w5WBBquKPq0l3GDw==}
+    peerDependencies:
+      cytoscape: ^3.23.0
+      cytoscape-layers: ^3.0.0
+
   cytoscape-cola@2.5.1:
     resolution: {integrity: sha512-4/2S9bW1LvdsEPmxXN1OEAPFPbk7DvCx2c9d+TblkQAAvptGaSgtPWCByTEGgT8UxCxcVqes2aFPO5pzwo7R2w==}
     peerDependencies:
@@ -864,6 +885,11 @@ packages:
     resolution: {integrity: sha512-VwPj0VR25GPfy6qXVQRi/MYlZM/zkdvRhHlgqbM//lSvstgM6fhp3ik/uM8Wr8nlhskfqz/M1fIDmR6UckbS2A==}
     peerDependencies:
       cytoscape: ^3.2.0
+
+  cytoscape-layers@3.0.0:
+    resolution: {integrity: sha512-RpOo7CW2dYLCDxxhiP1yxPqzwzivSqbHpMfs+SrEz3SksJC08UOtkMmo88CV7LN5jTdLlubLZAlV5KvTYnSNWg==}
+    peerDependencies:
+      cytoscape: ^3.23.0
 
   cytoscape@3.32.0:
     resolution: {integrity: sha512-5JHBC9n75kz5851jeklCPmZWcg3hUe6sjqJvyk3+hVqFaKcHwHgxsjeN1yLmggoUc6STbtm9/NQyabQehfjvWQ==}
@@ -1565,6 +1591,9 @@ packages:
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+
+  lodash.throttle@4.1.1:
+    resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
@@ -2516,6 +2545,12 @@ snapshots:
 
   '@types/json5@0.0.29': {}
 
+  '@types/lodash.throttle@4.1.9':
+    dependencies:
+      '@types/lodash': 4.17.16
+
+  '@types/lodash@4.17.16': {}
+
   '@types/node@20.17.47':
     dependencies:
       undici-types: 6.19.8
@@ -2814,6 +2849,8 @@ snapshots:
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.24.5)
 
+  bubblesets-js@3.0.0: {}
+
   busboy@1.6.0:
     dependencies:
       streamsearch: 1.1.0
@@ -2897,6 +2934,15 @@ snapshots:
 
   csstype@3.1.3: {}
 
+  cytoscape-bubblesets@4.0.0(cytoscape-layers@3.0.0(cytoscape@3.32.0))(cytoscape@3.32.0):
+    dependencies:
+      '@types/cytoscape': 3.21.9
+      '@types/lodash.throttle': 4.1.9
+      bubblesets-js: 3.0.0
+      cytoscape: 3.32.0
+      cytoscape-layers: 3.0.0(cytoscape@3.32.0)
+      lodash.throttle: 4.1.1
+
   cytoscape-cola@2.5.1(cytoscape@3.32.0):
     dependencies:
       cytoscape: 3.32.0
@@ -2921,6 +2967,11 @@ snapshots:
     dependencies:
       cytoscape: 3.32.0
       klayjs: 0.4.1
+
+  cytoscape-layers@3.0.0(cytoscape@3.32.0):
+    dependencies:
+      '@types/cytoscape': 3.21.9
+      cytoscape: 3.32.0
 
   cytoscape@3.32.0: {}
 
@@ -3777,6 +3828,8 @@ snapshots:
       p-locate: 5.0.0
 
   lodash.merge@4.6.2: {}
+
+  lodash.throttle@4.1.1: {}
 
   lodash@4.17.21: {}
 

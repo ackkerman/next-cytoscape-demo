@@ -2,7 +2,14 @@
 "use client";
 import React, { useEffect } from "react";
 import CytoscapeComponent from "react-cytoscapejs";
+import type { BubbleDef } from "./types";
 
+let BubbleSets: any;
+if (typeof window !== "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  const mod = require("cytoscape-bubblesets");
+  BubbleSets = mod.default ?? mod;  
+}
 import COSEBilkent from "cytoscape-cose-bilkent";
 import cola from "cytoscape-cola";
 import dagre from "cytoscape-dagre";
@@ -10,9 +17,11 @@ import elk from "cytoscape-elk";
 import klay from "cytoscape-klay";
 import cytoscape from "cytoscape";
 
+
 if (!(globalThis as any)[Symbol.for("cytoscapeExts")]) {
   (globalThis as any)[Symbol.for("cytoscapeExts")] = true;
 
+  if (BubbleSets) cytoscape.use(BubbleSets);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   cytoscape.use(COSEBilkent);
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -25,12 +34,6 @@ if (!(globalThis as any)[Symbol.for("cytoscapeExts")]) {
   cytoscape.use(klay);
 }
 
-export type GraphNode = {
-  id: string;
-  label: string;
-  primary?: boolean;
-  content?: string[];
-};
 
 type Props = {
   elements: cytoscape.ElementDefinition[];
@@ -40,7 +43,23 @@ type Props = {
   stylesheet: cytoscape.Stylesheet[];
   onCyInit: (cy: cytoscape.Core) => void;
   onNodeSelect: (n: { id: string; label: string; content: string[] } | null) => void;
+  bubbles?: BubbleDef[];
 };
+function drawBubbles(cy: cytoscape.Core, defs: BubbleDef[] | undefined) {
+  if (!defs?.length) return;
+
+  // @ts-ignore
+  const bb = cy.bubbleSets();
+
+  defs.forEach(def => {
+    const nodeSet = cy.collection(def.nodes.map(id => cy.$id(id)));
+    const edgeSet = def.edges
+      ? cy.collection(def.edges.map(eid => cy.$id(eid)))
+      : cy.collection();
+    const path = bb.addPath(nodeSet, edgeSet, null, def.style);
+    console.log(path);
+  });
+}
 
 export const layouts = {
   'cose': { name: 'cose', animate: true, randomize: false, nodeDimensionsIncludeLabels: true },
@@ -58,7 +77,7 @@ export const layouts = {
   'klay': { name: 'klay', animate: true, randomize: false, nodeDimensionsIncludeLabels: true }
 } as const;
 
-const GraphViewer: React.FC<Props> = ({ elements, layout, stylesheet, onCyInit, onNodeSelect }) => {
+const GraphViewer: React.FC<Props> = ({ elements, layout, stylesheet, onCyInit, onNodeSelect, bubbles }) => {
 
   const handleCyInit = (cy: cytoscape.Core) => {
     if (!cy.scratch("_eventsBound")) {
@@ -75,11 +94,15 @@ const GraphViewer: React.FC<Props> = ({ elements, layout, stylesheet, onCyInit, 
       });
       cy.scratch("_eventsBound", true);
     }
+
+    drawBubbles(cy, bubbles);
+
     onCyInit(cy);
   };
   
   useEffect(() => {
     // no-op: this is just to ensure styles reloaded when hot-reloading
+
   }, [stylesheet]);
 
   return (

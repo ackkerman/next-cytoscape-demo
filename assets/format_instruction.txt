@@ -1,13 +1,17 @@
-## 🌐 Node-Link JSON 仕様
+## 🌐 Node‑Link JSON 仕様
 
 ### 📑 ルート構造
 
 ```jsonc
 {
-  "nodes": [ /* Node オブジェクトの配列 */ ],
-  "links": [ /* Link オブジェクトの配列 */ ]
+  "nodes":   [ /* Node オブジェクトの配列 (必須) */ ],
+  "links":   [ /* Link オブジェクトの配列 (必須) */ ],
+  "bubbles": [ /* Bubble オブジェクトの配列 (任意) */ ]
 }
 ```
+
+> `bubbles` が存在しない、または空配列でも旧仕様のビューワは問題なく動作するため **完全後方互換**。
+
 
 ### 🔹 `nodes` 配列 ― **必須**
 
@@ -16,9 +20,9 @@
 | `id`      | `string`   | ✅  | ノードのユニーク ID。英数字と記号のみ（空白不可）。           |
 | `label`   | `string`   | ❷  | 画面に表示するテキスト。省略時は `id` がそのまま使われる。      |
 | `primary` | `boolean`  | ❷  | 章見出しなど強調したいノードに `true`。デフォルト `false`。 |
-| `content` | `string[]` | ❷  | 箇条書き用の本文。空配列可。                        |
+| `content` | `string[]` | ❷  | 箇条書き本文。空配列可。                          |
 
-> ❷ = *オプション*（指定が無い場合はデフォルト値が適用）。
+> ❷ = *オプション*（省略時はデフォルト値が適用）。
 
 ### 🔹 `links` 配列 ― **必須**
 
@@ -26,13 +30,22 @@
 | -------- | -------- | -- | ---------------------------------- |
 | `source` | `string` | ✅  | 辺の始点ノード ID（`nodes[*].id` と一致すること）。 |
 | `target` | `string` | ✅  | 辺の終点ノード ID（`nodes[*].id` と一致すること）。 |
-| `value`  | `int`    | ❷  | 辺の重み |
+| `label`  | `string`    | ❷  | 辺の説明（省略可）。                         |
 
-> **向き**は *source → target* の **有向グラフ**。
-> `convertToCytoscapeElements()` が自動で `id: "e-source-target"` を生成するので
-> `links` 側で `id` を書く必要は無い。
-> 重み付きグラフにする際は`value`に値を指定する。
+> **向き**は *source → target* の **有向グラフ**
+> `convertToCytoscapeElements()` が自動で `id: "e-source-target"` を生成するため `links` には `id` を書かない。
 
+### 🔹 `bubbles` 配列 ― **任意（Bubble Sets 拡張）**
+
+| フィールド   | 型          | 必須 | 説明                                                                                    |
+| ------- | ---------- | -- | ------------------------------------------------------------------------------------- |
+| `id`    | `string`   | ✅  | バブルのユニーク ID。                                                                          |
+| `nodes` | `string[]` | ✅  | バブルに含めるノード ID のリスト（`nodes[*].id` と一致すること）。                                            |
+| `edges` | `string[]` | ❷  | バブルに含めるエッジ ID（省略可）。<br/>エッジ ID は暗黙の `e-<source>-<target>` 形式を想定。                      |
+| `label` | `string`   | ❷  | バブル領域に表示するテキスト。                                                                       |
+| `style` | `object`   | ❷  | 表示スタイル（色・不透明度・パディングなど）。<br/>例: `{ "color": "#FFEEAA", "opacity": 0.3, "padding": 8 }` |
+
+> `edges` を省略すると **Bubble Sets** プラグインに `null` を渡したときと同様、ノード集合間を自然な曲線で結ぶ形状が生成される。
 
 ### ✅ 最小構成サンプル
 
@@ -45,19 +58,31 @@
   ],
   "links": [
     { "source": "A", "target": "B" },
-    { "source": "A", "target": "C", "value": 1 }
+    { "source": "A", "target": "C" }
+  ],
+  "bubbles": [
+    {
+      "id": "grp-1",
+      "nodes": ["A", "B"],
+      "label": "Group 1",
+      "style": { "color": "#FFEEAA", "opacity": 0.3, "padding": 10 }
+    }
   ]
 }
 ```
+
 
 ### 🚦 バリデーション・制約
 
 1. **ID の一意性**
 
-   * `nodes[*].id` は重複禁止。
-2. **リンクの整合性**
+   * `nodes[*].id`、`bubbles[*].id` はそれぞれ重複禁止。
+2. **リンク & バブルの整合性**
 
-   * `links[*].source` / `target` は必ず `nodes` に存在する ID。
+   * `links[*].source` / `target`、`bubbles[*].nodes[]` / `edges[]` は必ず存在する ID を参照すること。
 3. **余計なプロパティ禁止**
 
-   * テストを楽にするため、上記以外の任意プロパティは付けないこと。
+   * テスト容易化のため、ここに記載の無い任意プロパティは付けないこと。
+4. **後方互換**
+
+   * `bubbles` が存在しない JSON は旧ビューワでもそのまま利用可能。

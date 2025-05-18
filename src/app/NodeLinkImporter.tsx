@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent } from "react";
 import { convertToCytoscapeElements } from "./convertToCytoscape";
-import type { NodeLinkGraph } from "./convertToCytoscape";
+import type { NodeLinkGraph, BubbleDef } from "./types";
 
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
@@ -11,6 +11,7 @@ import "prismjs/components/prism-json";
 type Props = {
   /** 変換後 elements を親へ渡す */
   onLoad: (els: cytoscape.ElementDefinition[]) => void;
+  onLoadBubbles?: (bubbles: BubbleDef[]) => void;
 };
 
 const defaultJson = `{
@@ -20,8 +21,8 @@ const defaultJson = `{
     { "id": "C", "label": "Child 2", "content": ["bullet 1", "bullet 2"] }
   ],
   "links": [
-    { "source": "A", "target": "B" },
-    { "source": "A", "target": "C" }
+    { "source": "A", "target": "B"},
+    { "source": "A", "target": "C", "label": "Link to Child 2" }
   ]
 }`
 
@@ -29,15 +30,19 @@ const defaultJson = `{
  * node-link 形式(JSON) → Cytoscape elements へ変換し
  * 親から受け取った onLoad() に渡す UI
  */
-const NodeLinkImporter: React.FC<Props> = ({ onLoad }) => {
+const NodeLinkImporter: React.FC<Props> = ({ onLoad, onLoadBubbles }) => {
   const [raw, setRaw] = useState<string>(defaultJson);
 
   /** JSON → elements 変換 → 親へ通知 */  
   const handleImport = () => {
     try {
       const graph: NodeLinkGraph = JSON.parse(raw);
+      const bubbles = graph.bubbles ?? [];
       const elements = convertToCytoscapeElements(graph);
       onLoad(elements);
+      if (onLoadBubbles) {
+        onLoadBubbles(bubbles);
+      }
     } catch (e) {
       console.error(e);
       alert("⚠️ JSON の構文が正しくありません");

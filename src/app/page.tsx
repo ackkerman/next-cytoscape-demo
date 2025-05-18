@@ -1,17 +1,105 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, EyeOff } from "lucide-react";
 
 import NodeLinkImporter from "./NodeLinkImporter";
 import GraphViewer, { layouts } from "./GraphViewer";
 import LayoutControls from "./LayoutControls";
+import type { BubbleDef } from "./types";
+
+
+// @ts-expect-error
+const baseStyles: cytoscape.Stylesheet[] = [
+  { 
+    selector: "node", 
+    style: { 
+      "background-color": "#fff", 
+      "border-width": 1, 
+      "border-color": "#333", 
+      label: "data(label)", 
+      "text-wrap": "wrap", 
+      "text-valign": "center", 
+      "text-halign": "center", 
+      "text-max-width": "200px", 
+      "font-size": "12px", 
+      color: "#000", 
+      width: "label", 
+      height: "label", 
+      padding: "15px", 
+      shape: "round-rectangle" } },
+  { 
+    selector: "node[primary]", 
+    style: { "background-color": "#f5f5f5", "border-color": "#000", "border-width": 2, "font-weight": "bold" } },
+  { 
+    selector: "node:selected", 
+    style: { "border-color": "#000", "border-width": 3, "background-color": "#e0e0e0" } },
+  { 
+    selector: "edge", 
+    style: { 
+      width: 2, 
+      label: "data(label)", 
+      "line-color": "#666", 
+      "target-arrow-color": "#666", 
+      "target-arrow-shape": "triangle",
+      "curve-style": "bezier", 
+      "arrow-scale": 0.8
+    }
+  },
+  {
+    selector: "node[group = 'bubbleset']",
+    style: {
+      opacity: 1,
+      // label: "data(label)",
+    }
+  }
+];
 
 export default function Page() {
   const [layout, setLayout] = useState<keyof typeof layouts>("cose");
   const [elements, setElements] = useState<cytoscape.ElementDefinition[]>([]);
+  const [bubbles, setBubbles] = useState<BubbleDef[]>([]);
   const [showPanel, setShowPanel] = useState(true);
   const [cy, setCy] = useState<cytoscape.Core | null>(null);
+  const [showEdgeLabels,   setShowEdgeLabels]   = useState(false);
+  const [showNodeLabels,   setShowNodeLabels]   = useState(true);
+  const [showNodeBubbles,  setShowNodeBubbles]  = useState(true);
   const [selected, setSelected] = useState<{ id: string; label: string; content: string[] } | null>(null);
+
+  
+  const buildStyles = (
+    edgeLbl: boolean,
+    nodeLbl: boolean,
+    bubbles: boolean
+  // @ts-expect-error
+  ): cytoscape.Stylesheet[] => {
+    // @ts-expect-error
+    const styles = structuredClone(baseStyles) as cytoscape.Stylesheet[];
+  
+    // node label
+    const nodeRule = styles.find(s => s.selector === "node")!;
+    nodeRule.style!.label = nodeLbl ? "data(label)" : "";
+  
+    // edge label
+    const edgeRule = styles.find(s => s.selector === "edge")!;
+    edgeRule.style!.label = edgeLbl ? "data(label)" : "";
+  
+    // bubble visibility
+    const bubbleRule = styles.find(s => s.selector === "node[group = 'bubbleset']")!;
+    bubbleRule.style!.opacity = bubbles ? 1 : 0;
+  
+    return styles;
+  };
+  
+  // @ts-expect-error
+  const [stylesheet, setStylesheet] = useState<cytoscape.Stylesheet[]>(
+    buildStyles(showEdgeLabels, showNodeLabels, showNodeBubbles)
+  );
+  
+  // トグル時に stylesheet 更新
+  useEffect(() => {
+    setStylesheet(buildStyles(showEdgeLabels, showNodeLabels, showNodeBubbles));
+  }, [showEdgeLabels, showNodeLabels, showNodeBubbles]);
+
 
   const changeLayout = (l: keyof typeof layouts) => {
     setLayout(l);
@@ -41,11 +129,22 @@ export default function Page() {
             onFit={fit}
             onZoomIn={zoomIn}
             onZoomOut={zoomOut}
+
+            showEdgeLabels={showEdgeLabels}
+            showNodeLabels={showNodeLabels}
+            showNodeBubbles={showNodeBubbles}
+            onToggleEdgeLabels={() => setShowEdgeLabels(v => !v)}
+            onToggleNodeLabels={() => setShowNodeLabels(v => !v)}
+            onToggleNodeBubbles={() => setShowNodeBubbles(v => !v)}
+          
           />
 
           <hr style={{ margin: "10px 0" }} />
 
-          <NodeLinkImporter onLoad={setElements} />
+          <NodeLinkImporter 
+            onLoad={setElements} 
+            onLoadBubbles={setBubbles}
+          />
         </div>
       )}
 
@@ -57,6 +156,7 @@ export default function Page() {
           stylesheet={stylesheet}
           onCyInit={setCy}
           onNodeSelect={setSelected}
+          bubbles={bubbles}
         />
       ) : (
         <Empty />
@@ -86,14 +186,6 @@ const Empty = () => (
     <p style={{ fontSize: 48, fontWeight: "bold" }}>No elements found.</p>
   </div>
 );
-
-// @ts-expect-error, CytoscapeComponent does not have a type definition for stylesheet
-const stylesheet: cytoscape.Stylesheet[] = [
-  { selector: "node", style: { "background-color": "#fff", "border-width": 1, "border-color": "#333", label: "data(label)", "text-wrap": "wrap", "text-valign": "center", "text-halign": "center", "text-max-width": "200px", "font-size": "12px", color: "#000", width: "label", height: "label", padding: "15px", shape: "round-rectangle" } },
-  { selector: "node[primary]", style: { "background-color": "#f5f5f5", "border-color": "#000", "border-width": 2, "font-weight": "bold" } },
-  { selector: "node:selected", style: { "border-color": "#000", "border-width": 3, "background-color": "#e0e0e0" } },
-  { selector: "edge", style: { width: 2, "line-color": "#666", "target-arrow-color": "#666", "target-arrow-shape": "triangle", "curve-style": "bezier", "arrow-scale": 0.8 } }
-];
 
 const toggleStyle: React.CSSProperties = {
   position: "absolute",
