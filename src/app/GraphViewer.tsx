@@ -38,7 +38,6 @@ if (!(globalThis as any)[Symbol.for("cytoscapeExts")]) {
 type Props = {
   elements: cytoscape.ElementDefinition[];
   layout: keyof typeof layouts;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // @ts-ignore
   stylesheet: cytoscape.Stylesheet[];
   onCyInit: (cy: cytoscape.Core) => void;

@@ -8,7 +8,7 @@ import LayoutControls from "./LayoutControls";
 import type { BubbleDef } from "./types";
 
 
-// @ts-expect-error
+// @ts-expect-error, Cytoscape has no type definition for this
 const baseStyles: cytoscape.Stylesheet[] = [
   { 
     selector: "node", 
@@ -70,9 +70,9 @@ export default function Page() {
     edgeLbl: boolean,
     nodeLbl: boolean,
     bubbles: boolean
-  // @ts-expect-error
+  // @ts-expect-error, Cytoscape has no type definition for this
   ): cytoscape.Stylesheet[] => {
-    // @ts-expect-error
+    // @ts-expect-error, Cytoscape has no type definition for this
     const styles = structuredClone(baseStyles) as cytoscape.Stylesheet[];
   
     // node label
@@ -90,7 +90,7 @@ export default function Page() {
     return styles;
   };
   
-  // @ts-expect-error
+  // @ts-expect-error, Cytoscape has no type definition for this
   const [stylesheet, setStylesheet] = useState<cytoscape.Stylesheet[]>(
     buildStyles(showEdgeLabels, showNodeLabels, showNodeBubbles)
   );
