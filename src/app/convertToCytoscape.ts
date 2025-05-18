@@ -1,23 +1,5 @@
 // convertToCytoscape.ts
-export type Node = {
-  /** ユニーク ID (必須) */
-  id: string;
-  label?: string;
-  /** トップレベル章見出しなど ― true なら太字枠線用 */
-  primary?: boolean;
-  /** 箇条書き本文 */
-  content?: string[];
-};
-
-export type Link = {
-  source: string;
-  target: string;
-};
-
-export type NodeLinkGraph = {
-  nodes: Node[];
-  links: Link[];
-};
+import type { NodeLinkGraph } from "./types";
 
 export function convertToCytoscapeElements(
   graph: NodeLinkGraph
@@ -37,7 +19,8 @@ export function convertToCytoscapeElements(
     data: {
       id: `e-${l.source}-${l.target}`, // ← e-A-B 形式
       source: l.source,
-      target: l.target
+      target: l.target,
+      label: l.label ?? ""
     }
   }));
 
